@@ -32,14 +32,22 @@ main = hakyll $ do
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/project.html" defaultContext
 
+    -- Micro projects: one-line entries, no card, no standalone page --------
+    match "micro/*" $
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/micro.html" defaultContext
+
     -- The projects page collects every card, ordered by filename -----------
     create ["projects.html"] $ do
         route idRoute
         compile $ do
             projects <- sortOn (toFilePath . itemIdentifier)
                     <$> loadAll "projects/*"
+            micro <- sortOn (toFilePath . itemIdentifier)
+                    <$> loadAll "micro/*"
             let ctx =
                     listField "projects" defaultContext (return projects) `mappend`
+                    listField "micro"    defaultContext (return micro)    `mappend`
                     constField "title" "Projects"                         `mappend`
                     defaultContext
             makeItem ""
