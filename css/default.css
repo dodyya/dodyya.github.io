@@ -292,6 +292,18 @@ pre code { font-size: 13px; background: none; border: 0; padding: 0; }
 pre.util { margin: 20px 0; }
 pre.util .cmt { color: #86b88f; }
 
+/* ---- footnotes ---- */
+.footnotes {
+  margin-top: 40px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--faint);
+}
+.footnotes ol { margin: 0; padding-left: 22px; }
+.footnotes li { margin: 5px 0; }
+.fn-ref { font-family: var(--mono); }
+
 /* ---- resume ---- */
 .resume-pdf {
   display: block;
