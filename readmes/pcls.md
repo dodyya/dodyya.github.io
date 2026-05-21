@@ -10,7 +10,7 @@ repo: https://github.com/dodyya/pcls
 PCLS is a fast, multithreaded particle physics simulation engine built in Rust. It simulates tens of thousands of particles in real-time, with gravity, collision detection, electrostatic (Coulomb), and additional forces. The engine uses efficient spatial partitioning and multithreaded collision resolution to enable massive scale, and provides direct, punchy pixel-based rendering for a responsive visual experience.
 
 <div class="note">
-pcls is multithreaded, which makes it a headache to run in a browser. Worker threads need `SharedArrayBuffer`, which browsers only expose under cross-origin isolation (the `COOP` and `COEP` response headers). So unlike the other projects here, pcls has no in-browser live demo. Clone the repo and run it locally with `cargo run --release`.
+pcls is multithreaded, which makes it a headache to run in a browser. So unlike the other projects here, pcls has no in-browser live demo. Clone the repo and run it locally with `cargo run --release`.
 </div>
 
 ## Features
