@@ -3,37 +3,36 @@ title: Typst
 ---
 <section class="page-head">
     <h1>Typst</h1>
-    <p class="lede">I write my problem sets and lecture notes in
-    <a href="https://typst.app">Typst</a>, and over a few semesters these
-    helpers piled up. The one I'm proudest of numbers problems, subproblems
-    and lemmas by itself, and keeps numbering them correctly when I shuffle
-    things around. Everything below is free to take, whole or piece by piece.</p>
+    <p class="lede">Helpers from my Typst problem sets and lecture notes. Copy whatever's useful.</p>
 </section>
 
-<section>
-    <h2>Self-numbering problems, subproblems and lemmas</h2>
-    <p><code>prob</code> opens a numbered problem box and quietly records its
-    title and color. <code>subprob</code> reopens that same box later with no
-    arguments at all, appending <em>contd.</em>, and <code>lemma</code> numbers
-    itself <em>problem.lemma</em> off the two counters, so reordering problems
-    renumbers every lemma on the next compile. <code>thm</code> rides along for
-    plain titled results. It all needs the
-    <a href="https://typst.app/universe/package/showybox">showybox</a> package.</p>
-<pre><code>#import "@preview/showybox:2.0.2": showybox
+<pre class="util"><code><span class="cmt">// Self-numbering problems, subproblems and lemmas. The one I'm proudest of.
+//
+// prob() opens a numbered problem box and quietly files away its title and
+// color. subprob() reopens that same box later with no arguments at all and
+// appends ", contd.". lemma() numbers itself problem.lemma off the two
+// counters, so reordering the problems renumbers every lemma on the next
+// compile. thm() rides along for plain titled results. Needs showybox.
+//
+//   #prob("Stable matching")[
+//     (a) Prove the algorithm terminates.
+//     #lemma[Engaged receivers only ever trade up.][ ...proof... ]
+//   ]
+//   #subprob[ (b) Show the returned matching is stable. #qed ]</span>
 
-// Two counters and one state value carry everything between calls.
-#let problem_counter = counter("problem")  // counts problems: 1, 2, 3, ...
-#let lemma_counter   = counter("lemma")    // counts lemmas within a problem
-#let last_prob       = state("last_prob", (:))  // title + color of the open one
+#import "@preview/showybox:2.0.2": showybox
 
-// A numbered problem box. `title` is positional, so call it as
-//   #prob("My title")[ ... ]   -- or   #prob(none)[ ... ]   for no title bar.
-// The title and color are stashed in `last_prob` for the helpers below.
+#let problem_counter = counter("problem")       <span class="cmt">// problems: 1, 2, 3, ...</span>
+#let lemma_counter   = counter("lemma")         <span class="cmt">// lemmas within a problem</span>
+#let last_prob       = state("last_prob", (:))  <span class="cmt">// title + color, carried</span>
+
+<span class="cmt">// `title` is positional: prob("My title")[...], or prob(none)[...] to drop
+// the title bar. The title and color are stashed in `last_prob` below.</span>
 #let prob(color: blue, title, count: true, ..body) = {
   if count [== Problem #problem_counter.step() #context problem_counter.display()]
   if count {
     last_prob.update(_ =&gt; (title: title, color: color))
-    lemma_counter.update(1)            // restart lemma numbering each problem
+    lemma_counter.update(1)            <span class="cmt">// restart lemma numbering</span>
   }
   if title != none {
     showybox(
@@ -59,8 +58,7 @@ title: Typst
   }
 }
 
-// Continues the problem above. No title, no color: it reads both back out
-// of `last_prob` and appends ", contd." on its own.
+<span class="cmt">// No title, no color: subprob reads both back out of `last_prob`.</span>
 #let subprob(..body) = context {
   let color = last_prob.get().at("color", default: blue)
   showybox(
@@ -75,8 +73,7 @@ title: Typst
   )
 }
 
-// A lemma, numbered as problem.lemma -- the second lemma inside problem 3
-// prints "Lemma 3.2". Reorder the problems and it all renumbers.
+<span class="cmt">// Numbered problem.lemma straight off the two counters.</span>
 #let lemma(claim, color: green, ..body) = context {
   lemma_counter.step()
   showybox(
@@ -86,54 +83,31 @@ title: Typst
   )
 }
 
-// A plain titled claim box, no numbering -- for theorems and named results.
+<span class="cmt">// A plain titled claim box, no numbering, for theorems and named results.</span>
 #let thm(name: "Theorem", statement, color: red, ..body) = showybox(
   frame: (body-color: color.lighten(90%)),
   [*#underline[#name:]* #statement],
   ..body,
 )</code></pre>
-    <p>In a document it reads about as plainly as the problem set itself:</p>
-<pre><code>#prob("Stable matching")[
-  (a) Prove that the Gale-Shapley algorithm always terminates.
 
-  #lemma[Once engaged, a receiver only ever trades up.][
-    A receiver swaps partners solely for a more-preferred proposer. #lemqed
-  ]
-]
-
-#subprob[
-  (b) Show the matching it returns is stable. #qed
-]</code></pre>
-</section>
-
-<section>
-    <h2>End-of-proof squares</h2>
-    <p>Drop <code>#qed</code> at the end of a proof and a filled square snaps
-    to the right margin without disturbing the line it lands on.
-    <code>#lemqed</code> is the hollow square, for closing a lemma.</p>
-<pre><code>// `h(1fr)` swallows the space to its left, flushing the square to the right
-// margin. The box pins its height to 0.5em and tweaks the baseline, so
-// scaling the glyph up to 1.6em never stretches the line it sits on.
+<pre class="util"><code><span class="cmt">// End-of-proof squares. Drop #qed at the end of a proof and a filled square
+// snaps to the right margin. h(1fr) eats the space to its left; the box pins
+// the height to 0.5em and shifts the baseline, so scaling the glyph up to
+// 1.6em never stretches the line it lands on. #lemqed is the hollow version,
+// for closing a lemma.</span>
 #let qed = h(1fr) + box(
   height: 0.5em, clip: false, baseline: -0.17em,
   align(horizon, text(1.6em, sym.square.filled)),
 )
-
-// The hollow version, for the end of a lemma's sub-proof.
 #let lemqed = h(1fr) + box(
   height: 0.5em, clip: false, baseline: -0.17em,
   align(horizon, text(1.6em, sym.square)),
 )</code></pre>
-</section>
 
-<section>
-    <h2>A slanted quotient</h2>
-    <p>A quotient-style notation where the two halves are nudged apart along a
-    diagonal and the brackets grow to wrap them. I reach for it when a flat
-    fraction would read as division rather than as a relation.</p>
-<pre><code>// The numerator drifts up and to the right, the denominator down and to the
-// left, and `lr` grows the delimiters to wrap the slanted pair. `size` is
-// bumped by the same offset so the brackets never clip the moved content.
+<pre class="util"><code><span class="cmt">// A slanted quotient, for when a flat fraction would read as division
+// rather than as a relation. The numerator drifts up and to the right, the
+// denominator down and to the left, and lr() grows the delimiters to wrap
+// the slanted pair. `size` is bumped by the same offset so nothing clips.</span>
 #let relmod(s, r) = {
   set text(size: 11pt, stroke: 0.05pt)
   let offset = 3pt
@@ -141,19 +115,21 @@ title: Typst
   let denom = move(dy:  offset, dx: -offset, r)
   $display(lr(num mid(slash) denom, size: #(80% + 2 * offset)))$
 }</code></pre>
-</section>
 
-<section>
-    <h2>An algorithm block that measures its own header</h2>
-    <p>A thin wrapper over the
-    <a href="https://typst.app/universe/package/algo">algo</a> package. The
-    trick worth stealing is the rule under the heading: it is drawn with
-    <code>measure()</code>, so it always comes out exactly as wide as the
-    procedure name and its argument list.</p>
-<pre><code>#import "@preview/algo:0.3.6": algo, i, d, comment
+<pre class="util"><code><span class="cmt">// An algorithm block that measures its own header. A thin wrapper over the
+// algo package; the idea worth keeping is the rule under the heading. It is
+// drawn with measure(), so it comes out exactly as wide as the procedure
+// name plus its parameter list, whatever you call it.
+//
+//   #alg(name: "Gcd", params: $a, b$)[
+//     while $b != 0$:#i\
+//     $(a, b) = (b, a mod b)$ #comment[Euclid's step]#d\
+//     return $a$
+//   ]
+//
+// #i and #d open and close an indent; a trailing \ ends a line.</span>
+#import "@preview/algo:0.3.6": algo, i, d, comment
 
-// The one nice idea here is the underline in the header: `measure()` reports
-// the width of the name and the params, and `std.line` is drawn to match.
 #let alg(name: "", params: [], body) = [
   #set text(bottom-edge: -0.2em)
   #algo(
@@ -177,26 +153,11 @@ title: Typst
     strong-keywords: false,
   )[#body]
 ]</code></pre>
-    <p>Using it:</p>
-<pre><code>// #i and #d open and close an indent; a trailing `\` ends a line.
-#alg(name: "Gcd", params: $a, b$)[
-  while $b != 0$:#i\
-  $(a, b) = (b, a mod b)$ #comment[Euclid's step]#d\
-  return $a$
-]</code></pre>
-</section>
 
-<section>
-    <h2>Boxed answers</h2>
-    <p><code>ans</code> frames a final answer and centers it on its own line.
-    <code>inlineans</code> does the same mid-sentence, using <code>outset</code>
-    so the rule clears the text and <code>baseline</code> so the box sits level
-    with the words around it.</p>
-<pre><code>// A boxed final answer, centered on its own line.
+<pre class="util"><code><span class="cmt">// Boxed answers. ans() frames a final answer and centers it on its own
+// line. inlineans() does the same mid-sentence: outset lets the rule
+// breathe past the text, baseline drops the box level with the words.</span>
 #let ans(body) = align(center)[#box(stroke: 0.7pt, inset: 0.7em)[#body]]
-
-// The same idea inline. `outset` lets the rule breathe past the text;
-// `baseline` drops the box so it sits level with the surrounding words.
 #let inlineans(body) = h(0.1em) + box(
   body,
   stroke: 0.7pt,
@@ -204,26 +165,19 @@ title: Typst
   outset: (x: 0.1em, y: 0.5em),
   baseline: 0.30em,
 )</code></pre>
-</section>
 
-<section>
-    <h2>Small conveniences</h2>
-    <p>The leftovers. <code>inline</code> flushes a green chevroned note to the
-    right margin, <code>aside</code> greys a passage out, and the last three are
-    one-liners not worth retyping in every file.</p>
-<pre><code>// A green note in heavy chevrons, flushed to the right margin.
+<pre class="util"><code><span class="cmt">// Small conveniences. inline() flushes a green chevroned note to the right
+// margin; aside() greys a passage out; the last three are one-liners not
+// worth retyping in every file.</span>
 #let inline(body) = [
   #set text(green.darken(30%))
   #h(1fr) $chevron.l.double$#body$chevron.r.double$]
 
-// Greys a passage out -- for remarks meant to read as secondary.
 #let aside(body) = [
   #set text(fill: gray)
   #body
 ]
 
-// Three one-liners worth never retyping:
-#let proof = underline[*Proof:*]                     // a "Proof:" lead-in
-#let hline = std.line(length: 100%, stroke: 0.5pt)   // a full-width rule
-#let inner(a, b) = $lr(chevron.l #a, #b chevron.r)$  // inner product ⟨a, b⟩</code></pre>
-</section>
+#let proof = underline[*Proof:*]                     <span class="cmt">// a "Proof:" lead-in</span>
+#let hline = std.line(length: 100%, stroke: 0.5pt)   <span class="cmt">// a full-width rule</span>
+#let inner(a, b) = $lr(chevron.l #a, #b chevron.r)$  <span class="cmt">// inner product ⟨a, b⟩</span></code></pre>

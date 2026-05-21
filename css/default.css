@@ -288,6 +288,10 @@ pre code { font-size: 13px; background: none; border: 0; padding: 0; }
 .graph-text .blurb { color: var(--ink); margin: 5px 0 9px; }
 .graph-text a { font-family: var(--sans); }
 
+/* ---- typst utils ---- */
+pre.util { margin: 20px 0; }
+pre.util .cmt { color: #86b88f; }
+
 /* ---- resume ---- */
 .resume-section { margin: 28px 0; }
 .resume-section > h2 { border-bottom: 1px solid var(--line); padding-bottom: 6px; }
