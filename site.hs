@@ -18,6 +18,11 @@ main = hakyll $ do
         route   idRoute
         compile copyFileCompiler
 
+    -- Resume PDF: copied verbatim as a static asset -------------------------
+    match "resume.pdf" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
@@ -52,7 +57,7 @@ main = hakyll $ do
             >>= relativizeUrls
 
     -- Standalone HTML pages (frontmatter + body) ---------------------------
-    match (fromList ["index.html", "graphs.html", "typst.html", "resume.html"]) $ do
+    match (fromList ["index.html", "desmos.html", "typst.html", "resume.html"]) $ do
         route   idRoute
         compile $ getResourceBody
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
