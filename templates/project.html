@@ -1,0 +1,18 @@
+<article class="card">
+    $if(image)$
+    <a class="card-media" href="$if(readme)$$readme$$else$$repo$$endif$">
+        <img src="/images/projects/$image$" alt="$title$ preview" loading="lazy">
+    </a>
+    $endif$
+    <div class="card-body">
+        <div class="card-head">
+            <h3>$if(readme)$<a href="$readme$">$title$</a>$else$$title$$endif$</h3>
+            <span class="tag">$language$</span>
+        </div>
+        <div class="card-desc">$body$</div>
+        <div class="card-links">
+            <a href="$repo$">repo &#8599;</a>
+            $if(demo)$<a class="demo" href="$demo$">&#9658; live demo</a>$endif$
+        </div>
+    </div>
+</article>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>$title$ · dodyya</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&display=swap">
+        <link rel="stylesheet" href="/css/default.css" />
+    </head>
+    <body>
+        <header>
+            <a class="logo" href="/"><span class="thingy" id="logo-glyph">\</span> dodyya</a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/projects.html">Projects</a>
+                <a href="/graphs.html">Graphs</a>
+                <a href="/typst.html">Typst</a>
+                <a href="/resume.html">Resume</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            $body$
+        </main>
+
+        <footer>
+            <div class="foot-links">
+                <a href="https://github.com/dodyya">github.com/dodyya</a>
+                <a href="mailto:dodya.feldman@gmail.com">dodya.feldman@gmail.com</a>
+            </div>
+            <div class="foot-note">
+                Site built with <a href="https://jaspervdj.be/hakyll">Hakyll</a>.
+            </div>
+        </footer>
+        <script>
+        (function () {
+          function upd(f, p, v) { var u = new URL(f.src, location.href); u.searchParams.set(p, v); f.src = u.toString(); }
+          document.querySelectorAll('.mode-switch').forEach(function (sw) {
+            var f = document.getElementById(sw.dataset.frame);
+            if (!f) return;
+            var p = sw.dataset.param;
+            sw.querySelectorAll('.mode-btn').forEach(function (b) {
+              b.addEventListener('click', function () {
+                upd(f, p, b.dataset.value);
+                sw.querySelectorAll('.mode-btn').forEach(function (x) { x.classList.remove('is-active'); });
+                b.classList.add('is-active');
+              });
+            });
+          });
+        })();
+        (function () {
+          var logo = document.querySelector('.logo');
+          var g = document.getElementById('logo-glyph');
+          if (!logo || !g) return;
+          var ranges = [[0x0450, 0x05C7], [0x07C0, 0x0815], [0x1200, 0x137F], [0x1800, 0x18AF], [0x1BAE, 0x1C24], [0x2200, 0x22FF], [0x2A00, 0x2AFF]];
+          var total = 0;
+          ranges.forEach(function (r) { total += r[1] - r[0] + 1; });
+          function pick() {
+            var n = Math.floor(Math.random() * total);
+            for (var i = 0; i < ranges.length; i++) {
+              var span = ranges[i][1] - ranges[i][0] + 1;
+              if (n < span) return String.fromCodePoint(ranges[i][0] + n);
+              n -= span;
+            }
+            return '\\';
+          }
+          var timer = null;
+          logo.addEventListener('mouseenter', function () {
+            clearInterval(timer);
+            timer = setInterval(function () { g.textContent = pick(); }, 150);
+          });
+          logo.addEventListener('mouseleave', function () { clearInterval(timer); });
+        })();
+        </script>
+    </body>
+</html>

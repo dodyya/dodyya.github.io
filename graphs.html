@@ -1,0 +1,78 @@
+---
+title: Graphs
+---
+<section class="page-head">
+    <h1>Graphs</h1>
+    <p class="lede" >I've been a big fan of Desmos for a while, and my <a href="https://en.wikipedia.org/wiki/Computational_geometry">computational geometry</a> class led to these particularly cool graphs.</>
+</section>
+
+<div class="graph">
+    <div class="graph-frame">
+        <iframe src="https://www.desmos.com/calculator/y10n15elco?embed" title="Line arrangements with depth" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="graph-text">
+        <h3>Line arrangements with depth</h3>
+        <p class="blurb">Exploring what a line arrangement with depths can look
+        like. Each point is colored by the minimum of its top and bottom depth,
+        where depth is the number of lines above or below it. The context for this was making a <a href="https://en.wikipedia.org/wiki/Tukey_depth">Tukey depth</a> oracle for a given set of points.</p>
+        <a href="https://www.desmos.com/calculator/y10n15elco">open in Desmos &#8599;</a>
+    </div>
+</div>
+
+<div class="graph">
+    <div class="graph-frame">
+        <iframe src="https://www.desmos.com/calculator/1wx3jqdtx9?embed" title="Minkowski sums via convolution" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="graph-text">
+        <h3>Minkowski sums via convolution</h3>
+        <p class="blurb">A <a href="https://en.wikipedia.org/wiki/Minkowski_addition">Minkowski sum</a> computed with counterclockwise
+        convolution. As far as I know, no other (correct) Desmos implementation of
+        Minkowski sums exists.</p>
+        <a href="https://www.desmos.com/calculator/1wx3jqdtx9">open in Desmos &#8599;</a>
+    </div>
+</div>
+
+<div class="graph">
+    <div class="graph-frame">
+        <iframe src="https://www.desmos.com/calculator/pnacrcvdth?embed" title="Ray-shooting and point-location duality" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="graph-text">
+        <h3>Ray-shooting and point-location duality</h3>
+        <p class="blurb">A demonstration of the duality between polygon
+        ray-shooting queries and point-location queries in the dual. Given a
+        polygon with an identified edge e, you can answer "which edge does a ray
+        from e hit?" by treating every vertex as a segment in ray-space (the
+        one-dimensional locus of ray parameters that hit it), building the
+        trapezoidal decomposition of that ray-space, and querying it. With a
+        history DAG, that runs in O(log n).</p>
+        <a href="https://www.desmos.com/calculator/pnacrcvdth">open in Desmos &#8599;</a>
+    </div>
+</div>
+
+<div class="graph">
+    <div class="graph-frame">
+        <iframe src="https://www.desmos.com/calculator/nau56gzym9?embed" title="Union of disks tangent to the origin" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="graph-text">
+        <h3>Union of disks tangent to the origin</h3>
+        <p class="blurb">An experimental proof of correctness for an algorithm
+        that computes the union of disks tangent to the origin via the convex
+        hull of their centers. A circular arc appears on the boundary of the
+        union exactly when its center is a hull point. The actual proof involved "inverting" the set of points.</p>
+        <a href="https://www.desmos.com/calculator/nau56gzym9">open in Desmos &#8599;</a>
+    </div>
+</div>
+
+<div class="graph">
+    <div class="graph-frame">
+        <iframe src="https://www.desmos.com/calculator/o72ivisetz?embed" title="Connected components in a union of disks" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="graph-text">
+        <h3>Connected components in a union of disks</h3>
+        <p class="blurb">An experimental proof of correctness for an algorithm
+        that counts connected components in a union of unit disks: filter the
+        <a href="https://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</a> of the centers down to edges of length at most
+        2r, then count connected components in the resulting graph. The actual proof involved keeping track of Voronoi regions while following a (topological) path in the disk union interior.</p>
+        <a href="https://www.desmos.com/calculator/o72ivisetz">open in Desmos &#8599;</a>
+    </div>
+</div>
