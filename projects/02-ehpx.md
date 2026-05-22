@@ -2,7 +2,7 @@
 title: ehpx
 repo: https://github.com/dodyya/ehpx
 readme: /projects/ehpx.html
-language: Rust
+language: Rust+LaTeX
 image: ehpx.jpg
 ---
 A lambda algebra calculator paired with a Curtis-algorithm implementation for
