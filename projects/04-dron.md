@@ -6,6 +6,5 @@ language: C++
 image: dron.jpg
 ---
 An interactive motion-planning visualizer for a rotating polygonal robot. Every
-configuration is a point `(x, y, θ)`, so dron builds the full 3D configuration
-space, decomposes it into a tetrahedral mesh, and searches that mesh for a
-collision-free path.
+configuration is a point `(x, y, θ)`, and every motion plan with rotation
+is a path in that space. We find reasonable paths around obstacles by finding 3D paths.
