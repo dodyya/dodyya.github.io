@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&display=swap">
         <link rel="stylesheet" href="/css/default.css" />
     </head>
-    <body>
+    <body$if(bodyclass)$ class="$bodyclass$"$endif$>
         <header>
             <a class="logo" href="/"><span class="thingy" id="logo-glyph">\</span> dodyya</a>
             <nav>
@@ -31,9 +31,6 @@
                 <a href="https://github.com/dodyya">github.com/dodyya</a>
                 <a href="mailto:dodya.feldman@gmail.com">dodya.feldman@gmail.com</a>
             </div>
-            <div class="foot-note">
-                Site built with <a href="https://jaspervdj.be/hakyll">Hakyll</a>.
-            </div>
         </footer>
         <script>
         (function () {
@@ -52,9 +49,6 @@
           });
         })();
         (function () {
-          var logo = document.querySelector('.logo');
-          var g = document.getElementById('logo-glyph');
-          if (!logo || !g) return;
           var ranges = [[0x0450, 0x05C7], [0x07C0, 0x0815], [0x1200, 0x137F], [0x1800, 0x18AF], [0x1BAE, 0x1C24], [0x2200, 0x22FF], [0x2A00, 0x2AFF]];
           var total = 0;
           ranges.forEach(function (r) { total += r[1] - r[0] + 1; });
@@ -67,12 +61,19 @@
             }
             return '\\';
           }
-          var timer = null;
-          logo.addEventListener('mouseenter', function () {
-            clearInterval(timer);
-            timer = setInterval(function () { g.textContent = pick(); }, 150);
-          });
-          logo.addEventListener('mouseleave', function () { clearInterval(timer); });
+          function wire(trigger, glyph, reset) {
+            if (!trigger || !glyph) return;
+            var timer = null;
+            trigger.addEventListener('mouseenter', function () {
+              clearInterval(timer);
+              timer = setInterval(function () { glyph.textContent = pick(); }, 100);
+            });
+            trigger.addEventListener('mouseleave', function () {
+              clearInterval(timer);
+            });
+          }
+          wire(document.querySelector('.logo'), document.getElementById('logo-glyph'), false);
+          wire(document.querySelector('.glyph-big'), document.getElementById('landing-glyph'), true);
         })();
         </script>
     </body>
