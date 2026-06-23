@@ -6,5 +6,4 @@ language: Rust
 image: wavz.jpg
 demo: /projects/wavz.html
 ---
-A WAV player and audio visualization suite powered by a hand-written
-Cooley-Tukey FFT. I downloaded and read several PDFs for that to happen. Paul helped with the parser.
+An interactive WAV player and audio visualization suite; collaborative final project in CS128H. Our own FFT, memory-mapped file I/O, audio/video sync.
