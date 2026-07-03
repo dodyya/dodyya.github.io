@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>venet</title>
+<style>
+  html, body { margin: 0; }
+  body {
+    background: #101010;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  #art { display: block; width: 100%; height: auto; background: #101010; }
+  #bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; color: #847c9c; font-size: 13px; letter-spacing: .09em;
+  }
+  #seed {
+    width: 11ch; background: #181818; color: #c9c4d6;
+    border: 1px solid #2a2a2e; border-radius: 4px; padding: 3px 6px; font: inherit;
+  }
+  #go {
+    background: #181818; color: #c9c4d6; border: 1px solid #2a2a2e;
+    border-radius: 4px; padding: 3px 10px; font: inherit; cursor: pointer;
+  }
+  #go:hover:enabled { border-color: #847c9c; }
+  #go:disabled { opacity: .5; cursor: default; }
+  #status { margin-left: auto; }
+</style>
+</head>
+<body>
+<canvas id="art" width="1920" height="1080"></canvas>
+<div id="bar">
+  <input id="seed" inputmode="numeric" spellcheck="false" aria-label="seed">
+  <button id="go">generate</button>
+  <span id="status">compiling steel&#8230;</span>
+</div>
+<script>
+(function () {
+  // The render is ~1s of solid number crunching, so it lives in a worker; the
+  // worker owns the wasm instance and streams progress back while it runs.
+  var workerSrc = [
+    'var ex;',
+    'onmessage = async function (e) {',
+    '  var m = e.data;',
+    '  if (m.url) {',
+    '    var buf = await (await fetch(m.url)).arrayBuffer();',
+    '    var r = await WebAssembly.instantiate(buf, {});',
+    '    ex = r.instance.exports;',
+    '    ex._initialize();',
+    '    postMessage({ ready: true, w: ex.width(), h: ex.height() });',
+    '    return;',
+    '  }',
+    '  var total = ex.steps(), chunk = 125, done = 0;',
+    '  ex.setup(m.seed);',
+    '  while (done < total) {',
+    '    var n = Math.min(chunk, total - done);',
+    '    ex.sim(n);',
+    '    done += n;',
+    '    postMessage({ progress: done / total });',
+    '  }',
+    '  ex.paint();',
+    '  var w = ex.width(), h = ex.height();',
+    '  var rgb = new Uint8Array(ex.memory.buffer, ex.frame(), w * h * 3);',
+    '  var rgba = new Uint8ClampedArray(w * h * 4);',
+    '  for (var i = 0, j = 0; j < rgba.length; i += 3, j += 4) {',
+    '    rgba[j] = rgb[i]; rgba[j + 1] = rgb[i + 1];',
+    '    rgba[j + 2] = rgb[i + 2]; rgba[j + 3] = 255;',
+    '  }',
+    '  postMessage({ seed: m.seed, rgba: rgba }, [rgba.buffer]);',
+    '};'
+  ].join('\n');
+
+  var canvas = document.getElementById('art');
+  var ctx = canvas.getContext('2d');
+  var seedBox = document.getElementById('seed');
+  var go = document.getElementById('go');
+  var statusEl = document.getElementById('status');
+  var busy = true;
+
+  var worker = new Worker(URL.createObjectURL(
+    new Blob([workerSrc], { type: 'text/javascript' })));
+
+  function generate(seed) {
+    if (busy) { return; }
+    busy = true;
+    go.disabled = true;
+    seedBox.value = seed;
+    statusEl.textContent = 'dropping steel…';
+    worker.postMessage({ seed: seed });
+  }
+
+  worker.onmessage = function (e) {
+    var m = e.data;
+    if (m.ready) {
+      canvas.width = m.w;
+      canvas.height = m.h;
+      busy = false;
+      var q = new URLSearchParams(location.search).get('seed');
+      generate(q !== null && /^\d+$/.test(q) ? +q : (Math.random() * 4294967296) >>> 0);
+      return;
+    }
+    if (m.progress !== undefined) {
+      statusEl.textContent = m.progress < 1
+        ? 'settling ' + Math.round(m.progress * 100) + '%'
+        : 'painting…';
+      return;
+    }
+    ctx.putImageData(new ImageData(m.rgba, canvas.width, canvas.height), 0, 0);
+    statusEl.textContent = 'seed ' + m.seed;
+    busy = false;
+    go.disabled = false;
+  };
+  worker.onerror = function (e) {
+    statusEl.textContent = 'failed to start: ' + e.message;
+  };
+
+  go.addEventListener('click', function () {
+    generate((Math.random() * 4294967296) >>> 0);
+  });
+  seedBox.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && /^\d+$/.test(seedBox.value)) {
+      generate(+seedBox.value);
+    }
+  });
+
+  worker.postMessage({ url: new URL('venet.wasm', location.href).href });
+})();
+</script>
+</body>
+</html>
