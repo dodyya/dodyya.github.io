@@ -5,10 +5,6 @@ repo: https://github.com/dodyya/wavz
 
 # wavz
 
-<div class="demo-embed"><div class="demo-controls-row"><div class="mode-switch" data-frame="wavz-frame" data-param="mode"><button class="mode-btn is-active" data-value="clip">Built-in clip</button><button class="mode-btn" data-value="mic">Microphone</button></div></div><div class="demo-stage"><iframe id="wavz-frame" src="/demos/wavz/index.html?mode=clip" title="wavz" loading="lazy" allow="microphone" style="aspect-ratio: 16 / 7;"></iframe></div><div class="controls"><div><span class="k">built-in clip</span> click or space to play/pause &middot; &larr;&rarr; seek &middot; &uarr;&darr; brightness &middot; scroll to zoom</div><div><span class="k">microphone</span> click the canvas and allow mic access for a live spectrogram</div></div></div>
-
-<p class="note">The in-browser build can stutter at times, a performance quirk of the WebAssembly version that I haven't pinned down yet. The native app runs smoothly.</p>
-
 A real-time audio visualization tool written in Rust that performs Fast Fourier Transform (FFT) analysis on audio streams and WAV files.
 
 <img width="1502" height="853" alt="image" src="https://github.com/user-attachments/assets/7fdfc158-21f5-4d8e-89e0-80b4221be459" />
